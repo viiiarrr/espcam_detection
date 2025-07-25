@@ -10,23 +10,21 @@ void setup() {
     Serial.println("Camera init failed!");
     while (1);
   }
-  Serial.println("Camera initialized. Starting motion detection...");
+  Serial.println("Camera initialized successfully!");
   
-  // Contoh penggunaan fungsi capture gambar
-  Serial.println("\nTaking initial test photo...");
-  camera_fb_t* test_fb = captureImage();
-  if (test_fb) {
-    printImageToSerial(test_fb);
-    esp_camera_fb_return(test_fb);
-  }
+  // Start WiFi and Web Server
+  startCameraWebServer();
   
   Serial.println("\nCommands available via Serial:");
   Serial.println("'c' - Capture single image");
   Serial.println("'q' + number - Set quality (0-63, lower = better)");
-  Serial.println("'s' + number - Set frame size (0=QQVGA, 1=QCIF, 2=HQVGA, 3=240x240, 4=QVGA, 5=CIF, 6=HVGA, 7=VGA, 8=SVGA, 9=XGA, 10=HD, 11=SXGA, 12=UXGA)");
+  Serial.println("'s' + number - Set frame size (0-12)");
   Serial.println("'f' - Toggle flash LED");
+  Serial.println("'m' - Toggle motion detection");
   Serial.println();
 }
+
+bool motionDetectionEnabled = true;
 
 void loop() {
   // Check for serial commands
@@ -72,9 +70,17 @@ void loop() {
       setFlashLED(flash_state);
       Serial.printf("Flash LED: %s\n", flash_state ? "ON" : "OFF");
     }
+    else if (command == "m") {
+      // Toggle motion detection
+      motionDetectionEnabled = !motionDetectionEnabled;
+      Serial.printf("Motion detection: %s\n", motionDetectionEnabled ? "ENABLED" : "DISABLED");
+    }
   }
   
-  // Continue motion detection
-  detectMotion(); 
+  // Continue motion detection if enabled
+  if (motionDetectionEnabled) {
+    detectMotion(); 
+  }
+  
   delay(500);     
 }

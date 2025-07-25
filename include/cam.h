@@ -3,6 +3,12 @@
 
 #include "esp_camera.h"
 #include "Arduino.h"
+#include "WiFi.h"
+#include "esp_http_server.h"
+
+// WiFi credentials - GANTI SESUAI HOTSPOT ANDA
+#define WIFI_SSID "NAMA_HOTSPOT_ANDA"
+#define WIFI_PASSWORD "PASSWORD_HOTSPOT_ANDA"
 
 // Pin definitions untuk ESP32-CAM (AI-Thinker model)
 #define PWDN_GPIO_NUM     32
@@ -46,5 +52,10 @@ void setFlashLED(bool state);
 
 // Fungsi untuk menyimpan gambar ke Serial (base64 atau hex dump)
 void printImageToSerial(camera_fb_t* fb);
+
+// Fungsi WiFi dan Web Server
+bool initWiFi();
+bool initWebServer();
+void startCameraWebServer();
 
 #endif
